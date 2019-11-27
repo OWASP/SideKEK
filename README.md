@@ -1,4 +1,4 @@
-# crypto-masterkey-keystore
+# SideKEK
 
 This repository provides an inexpensive means to protect cryptographic master keys (key encryption keys, KEKs) in a way that is resistant to some of the most common remote file exfiltration attacks.
 
