@@ -5,6 +5,7 @@ This repository provides an inexpensive means to protect cryptographic master ke
 ## Contents
 [Guidance for generating and managing application Master Keys](#guidance)  
 [Custom KeyStore implementations for Master Keys](#custom-keystores)  
+[Why a Master Key?](#why-a-master-key)
 [Sample code for generating and managing application master keys](#samples)
 
 
@@ -42,6 +43,22 @@ The guidance given here deals primarily with __credentials__ rather than with or
 To make the storage and retrieval of a Master Key simpler, we have provided a couple of implementations of the standard Java `KeyStore` class. These store one or more `SecretKey`, which you then can use to securely encrypt a Data Encryption Key, which in turn protects all other credentials, keys, and certificates.  We recommend this two-tier approach so that the Master Key can easily be backed up, restored, and replaced in case of a breach, without needing to touch any other encrypted data.  
 
 The Master Key (loaded and stored via our KeyStore implementations) is used to securely encrypt the Data Encryption Key in a file (this way you have complete understanding and control of the encryption of this important key). The Data Encryption Key is then used to generate any needed passphrases or cryptography keys, which are used to protect credentials, private keys, or other secret encryption keys.  To replace the Master Key, you decrypt the Data Encryption Key using the old Master Key, generate a new Master Key, then encrypt the Data Encryption Key (without changing it) with the _new_ Master Key and save the encrypted result.
+
+## Why a Master Key?
+
+A few big reasons:
+1) If you have to change an encryption key for some reason (if was compromised or expired, for example), then with a master key, it's quite simple -- decrypt the data encryption key, change the master key, re-encrypt the data encryption key using the new master key.  DONE.
+2) Offline backup? Simple
+3) Restore due to a disaster (somebody trashed the master key store somehow)? Simple. It's just one piece of data.
+
+For any of the cases above, if you had only a data encryption key, you would have a MUCH bigger problem. 
+You would have to find each and every piece of encrypted data, decrypt and re-encrypt each piece.
+That is very costly, time-consuming, and error-prone.
+
+4) Using a master key is standard industry practice.
+5) If your application already exists today, and you have a data encryption key, then introducing a master key is a relatively simple way to improve the protection of your data encryption key (especially if it is currently obfuscated or in the clear).
+You only need to add the master key keystore, securely encrypt the data encryption key, and you're done.  Very little code is touched.
+6) Upgrading to use of a HSM or other more-sophisticated mechanism (because your application is now wildly popular and you have all the money you need) is quite simple. Just swap out the existing master key code with your new code. Very little code disruption because all changes are isolated to the master key section.
 
 ## Samples
 ### Initialize Master Key System
