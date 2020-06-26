@@ -5,7 +5,7 @@ This repository provides an inexpensive means to protect cryptographic master ke
 ## Contents
 [Guidance for generating and managing application Master Keys](#guidance)  
 [Custom KeyStore implementations for Master Keys](#custom-keystores)  
-[Why a Master Key?](#why-a-master-key)
+[Why a Master Key?](#why-a-master-key)  
 [Sample code for generating and managing application master keys](#samples)
 
 
